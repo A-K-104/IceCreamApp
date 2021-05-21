@@ -1,33 +1,34 @@
 {
   "project_info": {
-    "project_number": "41340102901",
-    "project_id": "ice-cream-application",
-    "storage_bucket": "ice-cream-application.appspot.com"
+    "project_number": "52036914254",
+    "firebase_url": "https://icecreamapplication-4a8a2-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "icecreamapplication-4a8a2",
+    "storage_bucket": "icecreamapplication-4a8a2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:41340102901:android:f007ff7be395197954bdbc",
+        "mobilesdk_app_id": "1:52036914254:android:0162bfb33b5350ac46471f",
         "android_client_info": {
           "package_name": "com.example.icecreamapplication"
         }
       },
       "oauth_client": [
         {
-          "client_id": "41340102901-n2kfd4mgcqc70fro142n5lh6i2s7768g.apps.googleusercontent.com",
+          "client_id": "52036914254-94bgg9829prf2kanegs2qdq7ubuut5jr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDLiRFbpstPYrtQGNSgBmvWY7vn0W6wX-g"
+          "current_key": "AIzaSyDZB-w2IznIeTTuNG4Gtk_dYVwvSGorcPA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "41340102901-n2kfd4mgcqc70fro142n5lh6i2s7768g.apps.googleusercontent.com",
+              "client_id": "52036914254-94bgg9829prf2kanegs2qdq7ubuut5jr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
