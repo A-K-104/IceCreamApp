@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Ice cream Application</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="signup_login_hint">Already have an account? Sign In</string>
+    <string name="login_signup_hint">Don\'t have an account? Sign Up</string>
+    <string name="enter_email">Enter User Email</string>
+    <string name="login">Login</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="you_are_not_registered_register_here">You are not Registered? Register here</string>
+    <string name="weekly">Weekly</string>
 </resources>

@@ -1,29 +1,59 @@
 package com.example.icecreamapplication;
 
-public class User {
-    private String userName;
+
+import android.util.Log;
+
+import com.google.protobuf.StringValue;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+public class User   implements Serializable {
+    private String firstName;
+    private String lastName;
     private DateClass dateOfBirth;
     private boolean gender;//male=true // female= false
-    private String userId;
 
-    public User(String userName, String dateOfBirth, boolean gender, String userId) {
-        this.userName = userName;
+    public User(String name,String lastName ,String dateOfBirth, boolean gender ) {
+
+        this.firstName = name;
+        this.lastName= lastName;
         this.dateOfBirth = new DateClass(dateOfBirth);
         this.gender = gender;
-        this.userId = userId;
+
     }
-    public User(String userName, String dateOfBirth, boolean gender) {
-        this.userName = userName;
-        this.dateOfBirth = new DateClass(dateOfBirth);
-        this.gender = gender;
+    public User(Map<String,Object> userMap) {
+    User temp = setUserMap(userMap);
+        this.firstName = temp.getFirstName();
+        this.lastName= temp.getLastName();
+        this.dateOfBirth = temp.getDateOfBirth();
+        this.gender = temp.isGender();
     }
 
-    public String getUserName() {
-        return userName;
+    public Map<String,Object> getUserMap(){
+        Map<String,Object> userMap = new HashMap<>();
+        userMap.put("fName",this.firstName);
+        userMap.put("lName",this.lastName);
+        userMap.put("dateOfBirth",this.dateOfBirth.getDate());
+        userMap.put("gender",getGender());
+        return userMap;
+    }
+    public User setUserMap(Map<String,Object> userMap){
+        boolean bool = false;
+        if((String.valueOf(userMap.get("gender")))=="1") {
+            bool=true;
+        }
+        return new User(String.valueOf(userMap.get("fName")),String.valueOf(userMap.get("lName")),
+                (String.valueOf(userMap.get("dateOfBirth"))),bool);
+
+    }
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public DateClass getDateOfBirth() {
@@ -38,25 +68,31 @@ public class User {
         return gender;
     }
 
+    public int getGender() {
+        if(gender)
+            return 1;
+        return 0;
+    }
+
     public void setGender(boolean gender) {
         this.gender = gender;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "userName='" + userName + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
+                "firstName='" + firstName + '\'' +
+                ", dateOfBirth=" + dateOfBirth.getDate() +
                 ", gender=" + gender +
-                ", userId='" + userId + '\'' +
+                ", lastName='" + lastName + '\'' +
                 '}';
     }
 }
