@@ -1,9 +1,13 @@
 package com.example.icecreamapplication;
 
 
+import android.util.Log;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * This class came to replace the non function Date.java
@@ -38,6 +42,17 @@ public class DateClass implements Serializable {
         resetToDate();
     }
     /**
+     * tired option of builder set by today date
+     */
+    public DateClass(){
+        SimpleDateFormat df1 = new SimpleDateFormat("dd/MM/yyyy");
+        String date1 = df1.format(Calendar.getInstance().getTime());//gets the current date
+        DateClass date = new DateClass(date1);
+        this.day = date.getDay();
+        this.month = date.getMonth();
+        this.year = date.getYear();
+    }
+    /**
      * the function that can transfer string (dd/mm/yyyy) to date
      * at the fist and second if's we are testing that we are getting string that fit to our format of
      * @param stringDate dd/mm/yyyu
@@ -62,6 +77,7 @@ public class DateClass implements Serializable {
             }
         }
         else {
+            Log.d("DateClass", "error with date: "+stringDate);
             this.day =1;
             this.month =1;
             this.year=1900;

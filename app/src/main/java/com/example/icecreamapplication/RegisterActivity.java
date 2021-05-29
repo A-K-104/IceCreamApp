@@ -91,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     genderSw.isChecked()
                             );
                             FirebaseUser userLogedIn = FirebaseAuth.getInstance().getCurrentUser();
-                            DocumentReference documentReference= firestore.collection("user").document(userLogedIn.getUid());
+                            DocumentReference documentReference= firestore.collection("users").document(userLogedIn.getUid());
                             documentReference.set(user.getUserMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {

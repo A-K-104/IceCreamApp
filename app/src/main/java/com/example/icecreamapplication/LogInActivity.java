@@ -27,6 +27,7 @@ public class LogInActivity extends AppCompatActivity {
     Button btLogIn;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
+    String TAG = "LogInActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,15 +50,22 @@ public class LogInActivity extends AppCompatActivity {
                         public void onSuccess(AuthResult authResult) {
                             FirebaseUser userLogedIn = FirebaseAuth.getInstance().getCurrentUser();
 
-                            DocumentReference documentReference = firestore.collection("user").document(userLogedIn.getUid());
+                            DocumentReference documentReference = firestore.collection("users").document(userLogedIn.getUid());
                             documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     User user = new User(documentSnapshot.getData());
-                                    Intent intent = new Intent(LogInActivity.this, MainActivity.class);
-                                    intent.putExtra("USER_CLASS", user);
-                                    Log.d("pass data", user.toString());
-                                    startActivity(intent);
+                                    DocumentReference documentReference = firestore.collection("orders").document(userLogedIn.getUid());
+                                    documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot1) {
+                                            user.setMapOfOrders(documentSnapshot1.getData());
+                                            Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+                                            intent.putExtra("USER_CLASS", user);
+                                            Log.d("pass data", user.toString());
+                                            startActivity(intent);
+                                        }
+                                    });
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
