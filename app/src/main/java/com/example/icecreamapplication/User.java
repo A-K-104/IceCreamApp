@@ -18,6 +18,7 @@ public class User   implements Serializable {
     private boolean gender;//male=true // female= false
     private Map<String,Object>mapOfOrders;
     private boolean admin;
+    private List<OrderClass> orderClasses;
 
     public User(String name,String lastName ,String dateOfBirth, boolean gender ) {
         this.admin = false;
@@ -26,6 +27,7 @@ public class User   implements Serializable {
         this.dateOfBirth = new DateClass(dateOfBirth);
         this.gender = gender;
         mapOfOrders = new HashMap<>();
+        this.orderClasses = new ArrayList<>();
 
     }
     public User(String name,String lastName ,String dateOfBirth, boolean gender,boolean admin ) {
@@ -35,6 +37,7 @@ public class User   implements Serializable {
         this.dateOfBirth = new DateClass(dateOfBirth);
         this.gender = gender;
         mapOfOrders = new HashMap<>();
+        this.orderClasses = new ArrayList<>();
 
     }
     public User(Map<String,Object> userMap) {
@@ -45,6 +48,7 @@ public class User   implements Serializable {
         this.gender = temp.isGender();
         this.admin = temp.isAdmin();
         mapOfOrders = new HashMap<>();
+        this.orderClasses = new ArrayList<>();
     }
 
     public Map<String,Object> getUserMap(){
@@ -62,16 +66,28 @@ public class User   implements Serializable {
 
     }
     public OrderClass getLastOrderClass () {
-//        Map<String,Object>temp= (Map<String, Object>) mapOfOrders.get("order" + mapOfOrders.size());
         if (mapOfOrders != null)
             return new OrderClass((Map<String, Object>) mapOfOrders.get("order" + mapOfOrders.size()));
         return null;
     }
-    public List<OrderClass> a(){
+    public List<OrderClass> getListOfOrders(){
+
         List<OrderClass> myList = new ArrayList<>();
         if (mapOfOrders.get("order" + mapOfOrders.size()) != null){
-            for (int i =1;i<=mapOfOrders.size();i++) {
-//                Map<String, Object> temp = (Map<String, Object>) mapOfOrders.get("order" + mapOfOrders.size());
+            for (int i =0;i<=mapOfOrders.size();i++) {
+                Log.d("ddddddd",i+"/"+mapOfOrders.size());
+//                Log.d("TAG",new OrderClass((Map<String, Object>) mapOfOrders.get("order" +i)).toString());
+                myList.add(new OrderClass((Map<String, Object>) mapOfOrders.get("order" +i)));
+            }
+        }
+        Log.d("rr","tt");
+        return myList;
+    }
+    public List<OrderClass> getListOfOrdersFromMap(Map<String,Object>mapOfOrders){
+        List<OrderClass> myList = new ArrayList<>();
+        if (mapOfOrders.get("order" + mapOfOrders.size()) != null){
+            for (int i =0;i<=mapOfOrders.size();i++) {
+                if(new OrderClass((Map<String, Object>) mapOfOrders.get("order" +i)).getFlavor()!=null)
                 myList.add(new OrderClass((Map<String, Object>) mapOfOrders.get("order" +i)));
             }
         }
@@ -109,6 +125,18 @@ public class User   implements Serializable {
         if(gender)
             return 1;
         return 0;
+    }
+
+    public void addSingleOrderClass(OrderClass orderClass){
+        this.orderClasses.add(orderClass);
+    }
+
+    public List<OrderClass> getOrderClasses() {
+        return orderClasses;
+    }
+
+    public void setOrderClasses(List<OrderClass> orderClasses) {
+        this.orderClasses = orderClasses;
     }
 
     public void setGender(boolean gender) {

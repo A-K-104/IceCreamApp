@@ -1,15 +1,14 @@
 package com.example.icecreamapplication;
 
-import android.util.Log;
-
-import java.util.HashMap;
+import java.io.Serializable;
 import java.util.Map;
 
-public class OrderClass {
+public class OrderClass  implements Serializable {
 
     private String flavor;
     private DateClass dateOfOrder;
     private int statusOfOrder;
+    public String userId;
 
     public OrderClass(String flavor, DateClass dateOfOrder, int statusOfOrder) {
         this.flavor = flavor;
@@ -62,6 +61,15 @@ public OrderClass getOrderMap(Map<String,Object> orderMap){
     public int getStatusOfOrder() {
         return statusOfOrder;
     }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getStatusOfOrderString() {
         if(this.statusOfOrder ==0)
             return "order received";
