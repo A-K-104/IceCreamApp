@@ -19,6 +19,7 @@ public class User   implements Serializable {
     private Map<String,Object>mapOfOrders;
     private boolean admin;
     private List<OrderClass> orderClasses;
+    private List<UserIdentifier> listOfOrders;
 
     public User(String name,String lastName ,String dateOfBirth, boolean gender ) {
         this.admin = false;
@@ -28,6 +29,7 @@ public class User   implements Serializable {
         this.gender = gender;
         mapOfOrders = new HashMap<>();
         this.orderClasses = new ArrayList<>();
+        this.listOfOrders = new ArrayList<>();
 
     }
     public User(String name,String lastName ,String dateOfBirth, boolean gender,boolean admin ) {
@@ -38,7 +40,7 @@ public class User   implements Serializable {
         this.gender = gender;
         mapOfOrders = new HashMap<>();
         this.orderClasses = new ArrayList<>();
-
+        this.listOfOrders = new ArrayList<>();
     }
     public User(Map<String,Object> userMap) {
     User temp = setUserMap(userMap);
@@ -49,6 +51,7 @@ public class User   implements Serializable {
         this.admin = temp.isAdmin();
         mapOfOrders = new HashMap<>();
         this.orderClasses = new ArrayList<>();
+        this.listOfOrders = new ArrayList<>();
     }
 
     public Map<String,Object> getUserMap(){
@@ -70,18 +73,20 @@ public class User   implements Serializable {
             return new OrderClass((Map<String, Object>) mapOfOrders.get("order" + mapOfOrders.size()));
         return null;
     }
-    public List<OrderClass> getListOfOrders(){
+    public List<OrderClass> getListOfOrdersFromList(){
 
         List<OrderClass> myList = new ArrayList<>();
-        if (mapOfOrders.get("order" + mapOfOrders.size()) != null){
-            for (int i =0;i<=mapOfOrders.size();i++) {
-                if(mapOfOrders.get("order" +i)!=null) {
-                    try {
-                        Map<String,Object>temp = (Map<String, Object>) mapOfOrders.get("order" + i);
-                        myList.add(new OrderClass(temp));
-                    } catch (Exception e) {
-                        Log.d("TAG", "error: " + e);
+        if(mapOfOrders!=null) {
+            if (mapOfOrders.get("order" + mapOfOrders.size()) != null) {
+                for (int i = 0; i <= mapOfOrders.size(); i++) {
+                    if (mapOfOrders.get("order" + i) != null) {
+                        try {
+                            Map<String, Object> temp = (Map<String, Object>) mapOfOrders.get("order" + i);
+                            myList.add(new OrderClass(temp));
+                        } catch (Exception e) {
+                            Log.d("TAG", "error: " + e);
 
+                        }
                     }
                 }
             }
@@ -163,6 +168,15 @@ public class User   implements Serializable {
     public void setAdmin(boolean admin) {
         this.admin = admin;
     }
+
+    public void setListOfOrders(List<UserIdentifier> listOfOrders) {
+        this.listOfOrders = listOfOrders;
+    }
+    public List<UserIdentifier> getListOfOrders(){
+        return this.listOfOrders;
+    }
+
+
 
     @Override
     public String toString() {

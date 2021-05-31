@@ -8,20 +8,24 @@ public class OrderClass  implements Serializable {
     private String flavor;
     private DateClass dateOfOrder;
     private int statusOfOrder;
+    private String nameOfOrder;
     public String userId;
 
-    public OrderClass(String flavor, DateClass dateOfOrder, int statusOfOrder) {
+    public OrderClass(String flavor, DateClass dateOfOrder, int statusOfOrder,String nameOfOrder) {
         this.flavor = flavor;
         this.dateOfOrder = dateOfOrder;
         this.statusOfOrder = statusOfOrder;
+        this.nameOfOrder=nameOfOrder;
     }
-    public OrderClass(String flavor, int statusOfOrder) {
+    public OrderClass(String flavor, int statusOfOrder,String nameOfOrder) {
         this.flavor = flavor;
         this.dateOfOrder = new DateClass();
         this.statusOfOrder = statusOfOrder;
+        this.nameOfOrder=nameOfOrder;
     }
-    public OrderClass(String flavor) {
+    public OrderClass(String flavor,String nameOfOrder) {
         this.flavor = flavor;
+        this.nameOfOrder = nameOfOrder;
         this.dateOfOrder = new DateClass();
     }
     public OrderClass(Map<String,Object> map){
@@ -30,6 +34,7 @@ public class OrderClass  implements Serializable {
             this.flavor = temp.getFlavor();
             this.dateOfOrder = temp.getDateOfOrder();
             this.statusOfOrder = temp.getStatusOfOrder();
+            this.nameOfOrder = temp.getNameOfOrder();
         }
     }
 public OrderClass getOrderMap(Map<String,Object> orderMap){
@@ -38,7 +43,8 @@ public OrderClass getOrderMap(Map<String,Object> orderMap){
         Map<String, Object> tempMapOfDate = (Map<String, Object>) orderMap.get("dateOfOrder");
         return new OrderClass(String.valueOf(orderMap.get("flavor")),
                 new DateClass((String) tempMapOfDate.get("date")),
-                Integer.parseInt(String.valueOf(orderMap.get("statusOfOrder"))));
+                Integer.parseInt(String.valueOf(orderMap.get("statusOfOrder"))),
+                String.valueOf(orderMap.get("nameOfOrder")));
     }
     return null;
 }
@@ -70,6 +76,14 @@ public OrderClass getOrderMap(Map<String,Object> orderMap){
         this.userId = userId;
     }
 
+    public String getNameOfOrder() {
+        return nameOfOrder;
+    }
+
+    public void setNameOfOrder(String nameOfOrder) {
+        this.nameOfOrder = nameOfOrder;
+    }
+
     public String getStatusOfOrderString() {
         if(this.statusOfOrder ==0)
             return "order received";
@@ -92,6 +106,7 @@ public OrderClass getOrderMap(Map<String,Object> orderMap){
                 "flavor='" + flavor + '\'' +
                 ", dateOfOrder=" + dateOfOrder +
                 ", statusOfOrder=" + statusOfOrder +
+                ", nameOfOrder=" + nameOfOrder+
                 '}';
     }
 }

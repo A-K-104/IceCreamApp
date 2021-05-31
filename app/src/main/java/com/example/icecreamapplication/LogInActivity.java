@@ -19,17 +19,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Document;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class LogInActivity extends AppCompatActivity {
     TextView tvPassword, tvEmail, tvRegister;
@@ -80,7 +75,7 @@ public class LogInActivity extends AppCompatActivity {
 
                                             } else {
                                                 intent = new Intent(LogInActivity.this, MainActivity.class);
-                                                user.setOrderClasses(user.getListOfOrders());
+                                                user.setOrderClasses(user.getListOfOrdersFromList());
                                                 intent.putExtra("USER_CLASS", user);
                                                 Log.d("pass data", user.toString());
                                                 startActivity(intent);
@@ -120,21 +115,20 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     public void order(Intent intent,User user) {
-        Map<String, Object> tempMap = new HashMap<>();
-        FirebaseUser userLoggedIn = FirebaseAuth.getInstance().getCurrentUser();
-        DocumentReference documentReference = firestore.collection("orders").document(userLoggedIn.getUid());
         firestore.collection("orders").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                int o=0;
                 List<OrderClass>l = new ArrayList<>();
+                List<UserIdentifier> orders = new ArrayList<>();
                 for (int i=0;i<queryDocumentSnapshots.getDocuments().size();i++){
                     List<OrderClass>temp = user.getListOfOrdersFromMap(queryDocumentSnapshots.getDocuments().get(i).getData());
                     for (int y=0;y<temp.size();y++){
                         temp.get(y).setUserId(queryDocumentSnapshots.getDocuments().get(i).getId());
                     }
-                l.addAll(temp);
+                    orders.add(new UserIdentifier(temp,queryDocumentSnapshots.getDocuments().get(i).getId()));
+                    l.addAll(temp);
                 }
+                user.setListOfOrders(orders);
                 user.setOrderClasses(l);
                 intent.putExtra("USER_CLASS", user);
                 startActivity(intent);

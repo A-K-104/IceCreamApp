@@ -44,21 +44,21 @@ public class BuyActivity extends AppCompatActivity {
         btBuyVanilla.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OrderClass orderClass = new OrderClass("vanilla");
+                OrderClass orderClass = new OrderClass("vanilla",userClass.getFirstName()+" "+userClass.getLastName());
                 order(orderClass);
             }
         });
         btBuyBlueberryCheesecake.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OrderClass orderClass = new OrderClass("blueberryCheesecake");
+                OrderClass orderClass = new OrderClass("blueberryCheesecake",userClass.getFirstName()+" "+userClass.getLastName());
                 order(orderClass);
             }
         });
         btBuyCookieAndCream.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OrderClass orderClass = new OrderClass("cookieAndCream");
+                OrderClass orderClass = new OrderClass("cookieAndCream",userClass.getFirstName()+" "+userClass.getLastName());
                 order(orderClass);
             }
         });
