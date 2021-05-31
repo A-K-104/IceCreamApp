@@ -3,6 +3,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
         lastOrderDate = (TextView) findViewById(R.id.tv_last_order_date);
         btBuy = (Button) findViewById(R.id.buy_bt);
         btAbout = (Button) findViewById(R.id.about_bt);
-        listOfOrders = userClass.a();
-        position = listOfOrders.size()-1;
-        if(userClass.getLastOrderClass()!=null&&userClass.getLastOrderClass().getDateOfOrder()!=null){
+        listOfOrders =  userClass.getOrderClasses();
+        position =listOfOrders.size()-1;
+        if(listOfOrders!=null&&listOfOrders.get(position).getDateOfOrder()!=null){
             lastOrderFlavor.setText(listOfOrders.get(position).getFlavor());
             lastOrderStatus.setText(listOfOrders.get(position).getStatusOfOrderString());
             lastOrderDate.setText(listOfOrders.get(position).getDateOfOrder().getDate());
@@ -58,35 +59,33 @@ public class MainActivity extends AppCompatActivity {
         btNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(position<listOfOrders.size()-1){
+                if (position < listOfOrders.size() - 1) {
                     position++;
+                } else {
+                    Toast.makeText(MainActivity.this, "you are at the last order", Toast.LENGTH_SHORT).show();
                 }
-                else {
-                    Toast.makeText(MainActivity.this,"you are at the last order",Toast.LENGTH_SHORT).show();
+                if (listOfOrders != null) {
+
+                    lastOrderFlavor.setText(listOfOrders.get(position).getFlavor());
+                    lastOrderStatus.setText(listOfOrders.get(position).getStatusOfOrderString());
+                    lastOrderDate.setText(listOfOrders.get(position).getDateOfOrder().getDate());
                 }
-                lastOrderFlavor.setText(listOfOrders.get(position).getFlavor());
-                lastOrderStatus.setText(listOfOrders.get(position).getStatusOfOrderString());
-                lastOrderDate.setText(listOfOrders.get(position).getDateOfOrder().getDate());
-//                Intent intent = new Intent(MainActivity.this, OrderHistoryActivity.class);
-//                intent.putExtra("USER_CLASS", userClass);
-//                startActivity(intent);
             }
         });
         btPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(position>1){
+                if (position >= 1) {
                     position--;
+                } else {
+                    Toast.makeText(MainActivity.this, "you are at the first order", Toast.LENGTH_SHORT).show();
                 }
-                else {
-                    Toast.makeText(MainActivity.this,"you are at the first order",Toast.LENGTH_SHORT).show();
+                if (listOfOrders != null) {
+
+                    lastOrderFlavor.setText(listOfOrders.get(position).getFlavor());
+                    lastOrderStatus.setText(listOfOrders.get(position).getStatusOfOrderString());
+                    lastOrderDate.setText(listOfOrders.get(position).getDateOfOrder().getDate());
                 }
-                lastOrderFlavor.setText(listOfOrders.get(position).getFlavor());
-                lastOrderStatus.setText(listOfOrders.get(position).getStatusOfOrderString());
-                lastOrderDate.setText(listOfOrders.get(position).getDateOfOrder().getDate());
-//                Intent intent = new Intent(MainActivity.this, OrderHistoryActivity.class);
-//                intent.putExtra("USER_CLASS", userClass);
-//                startActivity(intent);
             }
         });
     }

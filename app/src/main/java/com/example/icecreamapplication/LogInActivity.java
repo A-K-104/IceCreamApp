@@ -80,6 +80,7 @@ public class LogInActivity extends AppCompatActivity {
 
                                             } else {
                                                 intent = new Intent(LogInActivity.this, MainActivity.class);
+                                                user.setOrderClasses(user.getListOfOrders());
                                                 intent.putExtra("USER_CLASS", user);
                                                 Log.d("pass data", user.toString());
                                                 startActivity(intent);
@@ -120,40 +121,28 @@ public class LogInActivity extends AppCompatActivity {
 
     public void order(Intent intent,User user) {
         Map<String, Object> tempMap = new HashMap<>();
-//        Log.d("sdsssssssssssssssssssss", "we ssssssssss");
         FirebaseUser userLoggedIn = FirebaseAuth.getInstance().getCurrentUser();
         DocumentReference documentReference = firestore.collection("orders").document(userLoggedIn.getUid());
         firestore.collection("orders").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 int o=0;
-//                Log.d("sdsssssssssssssssssssss", "we are at:" +queryDocumentSnapshots.getDocuments().toString());
                 List<OrderClass>l = new ArrayList<>();
                 for (int i=0;i<queryDocumentSnapshots.getDocuments().size();i++){
                     List<OrderClass>temp = user.getListOfOrdersFromMap(queryDocumentSnapshots.getDocuments().get(i).getData());
-                    Log.d(TAG,temp.toString());
                     for (int y=0;y<temp.size();y++){
                         temp.get(y).setUserId(queryDocumentSnapshots.getDocuments().get(i).getId());
                     }
                 l.addAll(temp);
                 }
-//                for (Iterator<QueryDocumentSnapshot> i = queryDocumentSnapshots.iterator(); i.hasNext(); ) {
-//                    o++;
-//                    Map<String, Object> userMap = (Map<String, Object>) i.next().getData();
-//                    Log.d(TAG,userMap.toString());
-//
-//                }
-//                Log.d("pass data", user.toString()+" l "+l.size()+"/"+user.getMapOfOrders().size());
-                Log.d(TAG,l.toString());
                 user.setOrderClasses(l);
-//                user.setMapOfOrders(tempMap);
                 intent.putExtra("USER_CLASS", user);
                 startActivity(intent);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
-                Log.d("ggggggggggg", "we failed:" + e.getMessage());
+                Log.d(TAG, "we failed:" + e.getMessage());
             }
         });
 

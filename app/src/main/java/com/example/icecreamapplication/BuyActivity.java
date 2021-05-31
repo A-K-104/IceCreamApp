@@ -3,6 +3,7 @@ package com.example.icecreamapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -62,42 +63,27 @@ public class BuyActivity extends AppCompatActivity {
             }
         });
     }
-    public void order(OrderClass orderClass){
-        Map<String,Object> map = userClass.getMapOfOrders();
-        if(map==null)
+    public void order(OrderClass orderClass) {
+        Map<String, Object> map = userClass.getMapOfOrders();
+        if (map == null)
             map = new HashMap<>();
-            map.put("order"+(map.size()+1),orderClass);
+        map.put("order" + (map.size() + 1), orderClass);
+        userClass.addSingleOrderClass(orderClass);
         FirebaseUser userLoggedIn = FirebaseAuth.getInstance().getCurrentUser();
-        DocumentReference documentReference= firestore.collection("orders").document(userLoggedIn.getUid());
+        DocumentReference documentReference = firestore.collection("orders").document(userLoggedIn.getUid());
         userClass.setMapOfOrders(map);
         documentReference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-
-//                    databaseHandler.createNewRowOfData(userClass,String.valueOf(passwordTv.getText()));
-                Log.d("sdsssssssssssssssssssss","success");
-
-                firestore.collection("orders").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                        for(Iterator<QueryDocumentSnapshot> i = queryDocumentSnapshots.iterator(); i.hasNext();){
-                            Map<String,Object> userMap = i.next().getData();
-                            Log.d("sdsssssssssssssssssssss","we are at:"+userMap.toString());
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull @NotNull Exception e) {
-                        Log.d("ggggggggggg","we failed:"+e.getMessage());
-                    }
-                });
-
+                Toast.makeText(BuyActivity.this, "order received successfully ", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(BuyActivity.this,MainActivity.class);
+                intent.putExtra("USER_CLASS", userClass);
+                startActivity(intent);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
-                Toast.makeText(BuyActivity.this,"failed 2 upload data: "+e.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(BuyActivity.this, "failed 2 upload data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -41,7 +41,6 @@ public class AdminActivity extends AppCompatActivity {
         btNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, listOfOrders.size() + "/" + position);
                 if (position < listOfOrders.size() - 1) {
                     position++;
                 } else {

@@ -75,12 +75,17 @@ public class User   implements Serializable {
         List<OrderClass> myList = new ArrayList<>();
         if (mapOfOrders.get("order" + mapOfOrders.size()) != null){
             for (int i =0;i<=mapOfOrders.size();i++) {
-                Log.d("ddddddd",i+"/"+mapOfOrders.size());
-//                Log.d("TAG",new OrderClass((Map<String, Object>) mapOfOrders.get("order" +i)).toString());
-                myList.add(new OrderClass((Map<String, Object>) mapOfOrders.get("order" +i)));
+                if(mapOfOrders.get("order" +i)!=null) {
+                    try {
+                        Map<String,Object>temp = (Map<String, Object>) mapOfOrders.get("order" + i);
+                        myList.add(new OrderClass(temp));
+                    } catch (Exception e) {
+                        Log.d("TAG", "error: " + e);
+
+                    }
+                }
             }
         }
-        Log.d("rr","tt");
         return myList;
     }
     public List<OrderClass> getListOfOrdersFromMap(Map<String,Object>mapOfOrders){
