@@ -118,18 +118,12 @@ public class LogInActivity extends AppCompatActivity {
         firestore.collection("orders").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<OrderClass>l = new ArrayList<>();
-                List<UserIdentifier> orders = new ArrayList<>();
+                List<OrderIdentifier> orders = new ArrayList<>();
                 for (int i=0;i<queryDocumentSnapshots.getDocuments().size();i++){
-                    List<OrderClass>temp = user.getListOfOrdersFromMap(queryDocumentSnapshots.getDocuments().get(i).getData());
-                    for (int y=0;y<temp.size();y++){
-                        temp.get(y).setUserId(queryDocumentSnapshots.getDocuments().get(i).getId());
-                    }
-                    orders.add(new UserIdentifier(temp,queryDocumentSnapshots.getDocuments().get(i).getId()));
-                    l.addAll(temp);
+                    orders.add(new OrderIdentifier(user.getListOfOrdersFromMap(queryDocumentSnapshots.getDocuments().get(i).getData()),
+                            queryDocumentSnapshots.getDocuments().get(i).getId()));
                 }
                 user.setListOfOrders(orders);
-                user.setOrderClasses(l);
                 intent.putExtra("USER_CLASS", user);
                 startActivity(intent);
             }

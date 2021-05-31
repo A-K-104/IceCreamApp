@@ -9,7 +9,7 @@ public class OrderClass  implements Serializable {
     private DateClass dateOfOrder;
     private int statusOfOrder;
     private String nameOfOrder;
-    public String userId;
+//    private
 
     public OrderClass(String flavor, DateClass dateOfOrder, int statusOfOrder,String nameOfOrder) {
         this.flavor = flavor;
@@ -17,12 +17,7 @@ public class OrderClass  implements Serializable {
         this.statusOfOrder = statusOfOrder;
         this.nameOfOrder=nameOfOrder;
     }
-    public OrderClass(String flavor, int statusOfOrder,String nameOfOrder) {
-        this.flavor = flavor;
-        this.dateOfOrder = new DateClass();
-        this.statusOfOrder = statusOfOrder;
-        this.nameOfOrder=nameOfOrder;
-    }
+
     public OrderClass(String flavor,String nameOfOrder) {
         this.flavor = flavor;
         this.nameOfOrder = nameOfOrder;
@@ -38,7 +33,6 @@ public class OrderClass  implements Serializable {
         }
     }
 public OrderClass getOrderMap(Map<String,Object> orderMap){
-//    return new OrderClass(String.valueOf(orderMap.get("flavor")),
     if(orderMap!=null) {
         Map<String, Object> tempMapOfDate = (Map<String, Object>) orderMap.get("dateOfOrder");
         return new OrderClass(String.valueOf(orderMap.get("flavor")),
@@ -66,14 +60,6 @@ public OrderClass getOrderMap(Map<String,Object> orderMap){
 
     public int getStatusOfOrder() {
         return statusOfOrder;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getNameOfOrder() {

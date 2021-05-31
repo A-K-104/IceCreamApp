@@ -3,8 +3,6 @@ package com.example.icecreamapplication;
 
 import android.util.Log;
 
-import com.google.protobuf.StringValue;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +17,7 @@ public class User   implements Serializable {
     private Map<String,Object>mapOfOrders;
     private boolean admin;
     private List<OrderClass> orderClasses;
-    private List<UserIdentifier> listOfOrders;
+    private List<OrderIdentifier> listOfOrders;
 
     public User(String name,String lastName ,String dateOfBirth, boolean gender ) {
         this.admin = false;
@@ -169,10 +167,10 @@ public class User   implements Serializable {
         this.admin = admin;
     }
 
-    public void setListOfOrders(List<UserIdentifier> listOfOrders) {
+    public void setListOfOrders(List<OrderIdentifier> listOfOrders) {
         this.listOfOrders = listOfOrders;
     }
-    public List<UserIdentifier> getListOfOrders(){
+    public List<OrderIdentifier> getListOfOrders(){
         return this.listOfOrders;
     }
 

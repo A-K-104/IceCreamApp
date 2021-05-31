@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
         listOfOrders =  userClass.getOrderClasses();
         position =listOfOrders.size()-1;
         if(listOfOrders!=null&&listOfOrders.toString()!="[]"){
-            Log.d(TAG,listOfOrders.toString());
             if(listOfOrders.get(position).getDateOfOrder()!=null){
             lastOrderFlavor.setText(listOfOrders.get(position).getFlavor());
             lastOrderStatus.setText(listOfOrders.get(position).getStatusOfOrderString());
