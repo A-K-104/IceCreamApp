@@ -3,6 +3,7 @@ package com.example.icecreamapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,6 +51,14 @@ public class AdminActivity extends AppCompatActivity {
         orderIdentifierList = userClass.getListOfOrders();
         if(orderIdentifierList.size()>0){
             position= orderIdentifierList.size()-1;
+            while (position>0){
+                if(orderIdentifierList.get(position).getOrderClasses().toString()=="[]"){
+                    position--;
+                }
+                else {
+                    break;
+                }
+            }
             positionInOrder = orderIdentifierList.get(position).getOrderClasses().size()-1;
             orderFlavor.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getFlavor());
             orderStatus.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getStatusOfOrderString());
@@ -59,7 +68,7 @@ public class AdminActivity extends AppCompatActivity {
         btNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (position < orderIdentifierList.size() - 1||positionInOrder < orderIdentifierList.get(position).getOrderClasses().size()-1) {
+                if ((position < orderIdentifierList.size() - 1&&orderIdentifierList.get(position+1).getOrderClasses().toString()!="[]")||positionInOrder < orderIdentifierList.get(position).getOrderClasses().size()-1) {
                     if(positionInOrder < orderIdentifierList.get(position).getOrderClasses().size()-1){
                         positionInOrder++;
                     }
@@ -79,8 +88,7 @@ public class AdminActivity extends AppCompatActivity {
         btPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (position >= 1||positionInOrder>=1) {
-//                    position--;
+                if ((position >= 1&&orderIdentifierList.get(position-1).getOrderClasses().toString()!="[]")||positionInOrder>=1) {
                     if(positionInOrder>=1){
                         positionInOrder--;
                     }
@@ -102,12 +110,16 @@ public class AdminActivity extends AppCompatActivity {
             public void onClick(View view) {
                 OrderClass tempOrder = orderIdentifierList.get(position).getOrderClasses().get(positionInOrder);
                 if (tempOrder.getStatusOfOrder() < 3) {
+                    ProgressDialog loadingIndicator = new ProgressDialog(AdminActivity.this);
+                    loadingIndicator.setMessage("updating order");
+                    loadingIndicator.show();
                     Map<String, Object> map = new HashMap<>();
                     tempOrder.setStatusOfOrder(tempOrder.getStatusOfOrder() + 1);
                     orderIdentifierList.get(position).getOrderClasses().set(positionInOrder, tempOrder);
                     for(int i = 0; i< orderIdentifierList.get(position).getOrderClasses().size(); i++) {
                         map.put("order" +( i + 1), orderIdentifierList.get(position).getOrderClasses().get(i) );
                     }
+
                     FirebaseUser userLoggedIn = FirebaseAuth.getInstance().getCurrentUser();
                     DocumentReference documentReference = firestore.collection("orders").document(orderIdentifierList.get(position).getUserId());
                     documentReference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -115,12 +127,14 @@ public class AdminActivity extends AppCompatActivity {
                         public void onSuccess(Void unused) {
                           orderStatus.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getStatusOfOrderString());
                         Toast.makeText(AdminActivity.this, "order updated successfully ", Toast.LENGTH_SHORT).show();
+                        loadingIndicator.cancel();
                         }
 
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull @NotNull Exception e) {
                         Toast.makeText(AdminActivity.this, "failed 2 upload data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        loadingIndicator.cancel();
                         }
 
                     });
@@ -130,12 +144,5 @@ public class AdminActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-    public int getMaxPosition(List<OrderIdentifier>orders){
-        int counter=0;
-        for (int i =0; i<orders.size();i++){
-            counter += orders.get(i).getOrderClasses().size();
-        }
-        return counter;
     }
 }

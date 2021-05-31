@@ -8,7 +8,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IceCreamApplication">
-        <activity android:name=".AdminActivity"></activity>
+        <activity android:name=".AdminActivity" />
         <activity android:name=".BuyActivity" />
         <activity android:name=".AboutActivity" />
         <activity android:name=".RegisterActivity" />

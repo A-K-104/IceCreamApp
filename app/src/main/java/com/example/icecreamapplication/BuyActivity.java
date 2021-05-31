@@ -3,6 +3,7 @@ package com.example.icecreamapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -65,6 +66,9 @@ public class BuyActivity extends AppCompatActivity {
     }
     public void order(OrderClass orderClass) {
         Map<String, Object> map = userClass.getMapOfOrders();
+        ProgressDialog loadingIndicator = new ProgressDialog(BuyActivity.this);
+        loadingIndicator.setMessage("creating order");
+        loadingIndicator.show();
         if (map == null)
             map = new HashMap<>();
         map.put("order" + (map.size() + 1), orderClass);
@@ -79,11 +83,13 @@ public class BuyActivity extends AppCompatActivity {
                 Intent intent = new Intent(BuyActivity.this,MainActivity.class);
                 intent.putExtra("USER_CLASS", userClass);
                 startActivity(intent);
+                loadingIndicator.cancel();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
                 Toast.makeText(BuyActivity.this, "failed 2 upload data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                loadingIndicator.cancel();
             }
         });
     }

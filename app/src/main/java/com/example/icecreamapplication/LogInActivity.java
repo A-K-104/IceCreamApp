@@ -3,8 +3,11 @@ package com.example.icecreamapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -46,6 +49,9 @@ public class LogInActivity extends AppCompatActivity {
         btLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ProgressDialog loadingIndicator = new ProgressDialog(LogInActivity.this);
+                loadingIndicator.setMessage("logging in");
+                loadingIndicator.show();
                 String email = String.valueOf(tvEmail.getText());
                 String password = String.valueOf(tvPassword.getText());
                 password = password.replaceAll("\\s+", "");//delete all spaces in the password
@@ -67,11 +73,8 @@ public class LogInActivity extends AppCompatActivity {
                                             user.setMapOfOrders(documentSnapshot1.getData());
                                             Intent intent;
                                             if (user.isAdmin()) {
-//                                                user.setMapOfOrders();
                                                 intent = new Intent(LogInActivity.this, AdminActivity.class);
-//                                                intent.putExtra("USER_CLASS", user);
-                                                order(intent,user);
-//                                                startActivity(intent);
+                                                order(intent, user);
 
                                             } else {
                                                 intent = new Intent(LogInActivity.this, MainActivity.class);
@@ -80,7 +83,7 @@ public class LogInActivity extends AppCompatActivity {
                                                 Log.d("pass data", user.toString());
                                                 startActivity(intent);
                                             }
-
+                                            loadingIndicator.cancel();
                                         }
                                     });
                                 }
@@ -88,6 +91,7 @@ public class LogInActivity extends AppCompatActivity {
                                 @Override
                                 public void onFailure(@NonNull @NotNull Exception e) {
                                     Toast.makeText(LogInActivity.this, "failed 2 log in: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    loadingIndicator.cancel();
                                 }
                             });
 
@@ -97,11 +101,14 @@ public class LogInActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull @NotNull Exception e) {
                             Toast.makeText(LogInActivity.this, "failed 2 log in: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            loadingIndicator.cancel();
                         }
                     });
                 } else {
                     Toast.makeText(LogInActivity.this, "please enter email/ password", Toast.LENGTH_SHORT).show();
+                    loadingIndicator.cancel();
                 }
+
             }
         });
         tvRegister.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +118,6 @@ public class LogInActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     public void order(Intent intent,User user) {

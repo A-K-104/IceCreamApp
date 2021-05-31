@@ -3,6 +3,7 @@ package com.example.icecreamapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -83,7 +84,11 @@ public class RegisterActivity extends AppCompatActivity {
                      * userName, weight, height, dateOfBirth, gender (as bool), zero point of counting steps
                      * then we upload the data to db
                      * and last it will start new activity
-                     */firebaseAuth.createUserWithEmailAndPassword(String.valueOf(emailTv.getText()),String.valueOf(passwordTv.getText())).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                     */
+                    ProgressDialog loadingIndicator = new ProgressDialog(RegisterActivity.this);
+                    loadingIndicator.setMessage("creating user");
+                    loadingIndicator.show();
+                    firebaseAuth.createUserWithEmailAndPassword(String.valueOf(emailTv.getText()),String.valueOf(passwordTv.getText())).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
                             User user = new User(String.valueOf(firstNameTv.getText()), String.valueOf(lastNameTv.getText()),
@@ -107,6 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.makeText(RegisterActivity.this,"failed 2 upload data: "+e.getMessage(),Toast.LENGTH_SHORT).show();
                                 }
                             });
+                            loadingIndicator.cancel();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -117,6 +123,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 tvEmailText.setTextColor(Color.RED);
                                 Toast.makeText(RegisterActivity.this, "Failed to register, need email", Toast.LENGTH_SHORT).show();
                             }
+                            loadingIndicator.cancel();
                         }
                     });
 
