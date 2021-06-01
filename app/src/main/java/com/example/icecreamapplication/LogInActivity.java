@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -40,12 +38,20 @@ public class LogInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-        tvPassword = (TextView) findViewById(R.id.tv_password);
-        tvEmail = (TextView) findViewById(R.id.tv_email);
-        btLogIn = (Button) findViewById(R.id.log_bt_login);
-        tvRegister = (TextView) findViewById(R.id.bt_register);
+        tvPassword = findViewById(R.id.tv_password);
+        tvEmail = findViewById(R.id.tv_email);
+        tvRegister = findViewById(R.id.bt_register);
+        btLogIn = findViewById(R.id.log_bt_login);
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+        /**
+         * first we set the loading indicator
+         * then we get the info from the text view.
+         * then we pass the data to db to log in.
+         * we check if user is admin (different screen and data)
+         * then we pull all the data to userClass (user data, and orders)
+         * and move to class
+         */
         btLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,28 +65,26 @@ public class LogInActivity extends AppCompatActivity {
                     firebaseAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            FirebaseUser userLogedIn = FirebaseAuth.getInstance().getCurrentUser();
-
-                            DocumentReference documentReference = firestore.collection("users").document(userLogedIn.getUid());
+                            FirebaseUser userLoggedIn = FirebaseAuth.getInstance().getCurrentUser();
+                            DocumentReference documentReference = firestore.collection("users").document(userLoggedIn.getUid());
                             documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    User user = new User(documentSnapshot.getData());
-                                    DocumentReference documentReference = firestore.collection("orders").document(userLogedIn.getUid());
+                                    User tempUser = new User(documentSnapshot.getData());
+                                    DocumentReference documentReference = firestore.collection("orders").document(userLoggedIn.getUid());
                                     documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot1) {
-                                            user.setMapOfOrders(documentSnapshot1.getData());
+                                            tempUser.setMapOfOrders(documentSnapshot1.getData());
                                             Intent intent;
-                                            if (user.isAdmin()) {
+                                            if (tempUser.isAdmin()) {
                                                 intent = new Intent(LogInActivity.this, AdminActivity.class);
-                                                order(intent, user);
-
+                                                adminLogIn(intent, tempUser);
                                             } else {
                                                 intent = new Intent(LogInActivity.this, MainActivity.class);
-                                                user.setOrderClasses(user.getListOfOrdersFromList());
-                                                intent.putExtra("USER_CLASS", user);
-                                                Log.d("pass data", user.toString());
+                                                tempUser.getListOfOrders().add(new OrderIdentifier(tempUser.getListOfOrdersFromMap()));
+                                                intent.putExtra("USER_CLASS", tempUser);
+                                                Log.d("pass data", tempUser.toString());
                                                 startActivity(intent);
                                             }
                                             loadingIndicator.cancel();
@@ -116,6 +120,9 @@ public class LogInActivity extends AppCompatActivity {
 
             }
         });
+        /**
+         * move to resistor activity
+         */
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +132,13 @@ public class LogInActivity extends AppCompatActivity {
         });
     }
 
-    public void order(Intent intent, User user) {
+    /**
+     * in this function we get all the data of orders and we convert them to
+     * list<OrderIdentifier> were we push data and id of users.
+     * @param intent for admin screen
+     * @param user get the user
+     */
+    public void adminLogIn(Intent intent, User user) {
         firestore.collection("orders").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -144,7 +157,5 @@ public class LogInActivity extends AppCompatActivity {
                 Log.d(TAG, "we failed:" + e.getMessage());
             }
         });
-
-
     }
 }

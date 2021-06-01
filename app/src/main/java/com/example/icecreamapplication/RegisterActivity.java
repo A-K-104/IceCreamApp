@@ -25,29 +25,30 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.jetbrains.annotations.NotNull;
 
 public class RegisterActivity extends AppCompatActivity {
-    TextView firstNameTv, lastNameTv,passwordTv,loginTv,emailTv;
+    TextView firstNameTv, lastNameTv, passwordTv, loginTv, emailTv;
     DatePicker dateOfBirthDP;
     Button registerBt;
     Switch genderSw;
     TextView tvPasswordText, tvFirstNameText, tvLastNameText, tvEmailText;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        firstNameTv = (TextView) findViewById(R.id.reg_name_et);
-        lastNameTv = (TextView) findViewById(R.id.reg_last_name_et);
-        passwordTv = (TextView) findViewById(R.id.reg_password_et);
-        emailTv = (TextView) findViewById(R.id.reg_email_et);
-        dateOfBirthDP = (DatePicker) findViewById(R.id.reg_date_of_birth_picker);
-        registerBt = (Button) findViewById(R.id.reg_bt_resistor);
-        genderSw = (Switch) findViewById(R.id.reg_gender_sw);
-        tvPasswordText= (TextView) findViewById(R.id.reg_password_tv);
-        tvFirstNameText = (TextView) findViewById(R.id.reg_name_tv);
-        tvLastNameText = (TextView) findViewById(R.id.reg_last_name_tv);
-        tvEmailText = (TextView) findViewById(R.id.reg_email_tv);
-        loginTv= (TextView) findViewById(R.id.reg_tv_login);
+        firstNameTv = findViewById(R.id.reg_name_et);
+        lastNameTv = findViewById(R.id.reg_last_name_et);
+        passwordTv = findViewById(R.id.reg_password_et);
+        emailTv = findViewById(R.id.reg_email_et);
+        tvPasswordText = findViewById(R.id.reg_password_tv);
+        tvFirstNameText = findViewById(R.id.reg_name_tv);
+        tvLastNameText = findViewById(R.id.reg_last_name_tv);
+        tvEmailText = findViewById(R.id.reg_email_tv);
+        loginTv = findViewById(R.id.reg_tv_login);
+        dateOfBirthDP = findViewById(R.id.reg_date_of_birth_picker);
+        registerBt = findViewById(R.id.reg_bt_resistor);
+        genderSw = findViewById(R.id.reg_gender_sw);
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
         /**
@@ -67,6 +68,9 @@ public class RegisterActivity extends AppCompatActivity {
         registerBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /**
+                 * first we rest all text color to black
+                 */
                 firstNameTv.setTextColor(Color.BLACK);
                 tvFirstNameText.setTextColor(Color.BLACK);
                 passwordTv.setTextColor(Color.BLACK);
@@ -76,40 +80,39 @@ public class RegisterActivity extends AppCompatActivity {
                 tvEmailText.setTextColor(Color.BLACK);
                 emailTv.setTextColor(Color.BLACK);
                 if ((!String.valueOf(firstNameTv.getText()).equals("")) && //if the user name isn't empty
-                        ((String.valueOf(passwordTv.getText()).length() >5)) &&//if the password is longer then 5
-                        (String.valueOf(lastNameTv.getText())).length()>1&&
-                        (String.valueOf(emailTv.getText())).length()>1){//if the last name value
+                        ((String.valueOf(passwordTv.getText()).length() > 5)) &&//if the password is longer then 5
+                        (String.valueOf(lastNameTv.getText())).length() > 1 &&
+                        (String.valueOf(emailTv.getText())).length() > 1) {//if the last name value
                     /**
                      * create the new User from the data in textBox's
-                     * userName, weight, height, dateOfBirth, gender (as bool), zero point of counting steps
+                     * email, password, firstName, lastName, dateOfBirth, gender (as bool)
                      * then we upload the data to db
                      * and last it will start new activity
                      */
-                    ProgressDialog loadingIndicator = new ProgressDialog(RegisterActivity.this);
+                    ProgressDialog loadingIndicator = new ProgressDialog(RegisterActivity.this);//loading animation
                     loadingIndicator.setMessage("creating user");
                     loadingIndicator.show();
-                    firebaseAuth.createUserWithEmailAndPassword(String.valueOf(emailTv.getText()),String.valueOf(passwordTv.getText())).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    firebaseAuth.createUserWithEmailAndPassword(String.valueOf(emailTv.getText()), String.valueOf(passwordTv.getText())).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
                             User user = new User(String.valueOf(firstNameTv.getText()), String.valueOf(lastNameTv.getText()),
                                     dateOfBirthDP.getDayOfMonth() + "/" + dateOfBirthDP.getMonth() + "/" + dateOfBirthDP.getYear(),
                                     genderSw.isChecked()
                             );
-                            FirebaseUser userLogedIn = FirebaseAuth.getInstance().getCurrentUser();
-                            DocumentReference documentReference= firestore.collection("users").document(userLogedIn.getUid());
+                            FirebaseUser userLoggedIn = FirebaseAuth.getInstance().getCurrentUser();
+                            DocumentReference documentReference = firestore.collection("users").document(userLoggedIn.getUid());
                             documentReference.set(user.getUserMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
 
-//                    databaseHandler.createNewRowOfData(userClass,String.valueOf(passwordTv.getText()));
-                                    Intent intent = new Intent(RegisterActivity.this,MainActivity.class);
+                                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                                     intent.putExtra("USER_CLASS", user);
                                     startActivity(intent);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull @NotNull Exception e) {
-                                    Toast.makeText(RegisterActivity.this,"failed 2 upload data: "+e.getMessage(),Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(RegisterActivity.this, "failed 2 upload data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                             loadingIndicator.cancel();
@@ -117,8 +120,11 @@ public class RegisterActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull @NotNull Exception e) {
-                            Toast.makeText(RegisterActivity.this,"failed: "+e.getMessage(),Toast.LENGTH_SHORT).show();
-                            if (e.getMessage().contains("email")){
+                            /**
+                             * if the email is in use/false we mark it red
+                             */
+                            Toast.makeText(RegisterActivity.this, "failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            if (e.getMessage().contains("email")) {
                                 emailTv.setTextColor(Color.RED);
                                 tvEmailText.setTextColor(Color.RED);
                                 Toast.makeText(RegisterActivity.this, "Failed to register, need email", Toast.LENGTH_SHORT).show();
@@ -130,8 +136,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 } else {
                     /**
-                     * first we rest all text to black
-                     * then we are retesting all data by itself and then mark the wrong one
+                     * we are retesting all data by itself and then mark the wrong one
                      */
 
                     if (String.valueOf(firstNameTv.getText()).equals("")) {
@@ -139,43 +144,23 @@ public class RegisterActivity extends AppCompatActivity {
                         tvFirstNameText.setTextColor(Color.RED);
                         Toast.makeText(RegisterActivity.this, "Failed to register, need user name", Toast.LENGTH_SHORT).show();
                     }
-                    if (String.valueOf(lastNameTv.getText()).length()<=1) {
+                    if (String.valueOf(lastNameTv.getText()).length() <= 1) {
                         lastNameTv.setTextColor(Color.RED);
                         tvLastNameText.setTextColor(Color.RED);
                         Toast.makeText(RegisterActivity.this, "Failed to register, need last name", Toast.LENGTH_SHORT).show();
                     }
-                    if (String.valueOf(emailTv.getText()).length()<=1) {
+                    if (String.valueOf(emailTv.getText()).length() <= 1) {
                         emailTv.setTextColor(Color.RED);
                         tvEmailText.setTextColor(Color.RED);
                         Toast.makeText(RegisterActivity.this, "Failed to register, need email", Toast.LENGTH_SHORT).show();
                     }
-                    if (String.valueOf(passwordTv.getText()).length()<=5) {
+                    if (String.valueOf(passwordTv.getText()).length() <= 5) {
                         passwordTv.setTextColor(Color.RED);
                         tvPasswordText.setTextColor(Color.RED);
                         Toast.makeText(RegisterActivity.this, "Failed to register, password to short at list 6 letters", Toast.LENGTH_SHORT).show();
                     }
-//                    if (databaseHandler.returnUserIdByUserName(String.valueOf(userNameTv.getText())) != null) {
-//                        userNameTv.setTextColor(Color.RED);
-//                        tvUserNameText.setTextColor(Color.RED);
-//                        Toast.makeText(RegisterActivity.this, "Failed to register, user name already in use", Toast.LENGTH_SHORT).show();
-//                    }
-
                 }
             }
         });
     }
-
-    /**
-     * this function test if a string value is parsable
-     * @param value the string that you want to test
-     * @return if it parsable it will return the number else null
-     */
-    public Double parseIntOrNull(String value) {
-        try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
 }

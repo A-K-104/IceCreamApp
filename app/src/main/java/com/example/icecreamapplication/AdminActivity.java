@@ -49,12 +49,16 @@ public class AdminActivity extends AppCompatActivity {
         firestore = FirebaseFirestore.getInstance();
         btPrevious = findViewById(R.id.admin_previous_order_bt);
         btNext = findViewById(R.id.admin_next_order_bt);
-        orderDate =  findViewById(R.id.tv_admin_order_date);
+        orderDate = findViewById(R.id.tv_admin_order_date);
         orderStatus = findViewById(R.id.tv_admin_order_status);
         orderFlavor = findViewById(R.id.tv_admin_order_flavor);
         orderName = findViewById(R.id.tv_admin_order_name);
         swipeRefreshLayout = findViewById(R.id.admin_swipe_refresh);
         orderIdentifierList = userClass.getListOfOrders();
+        /**
+         * we get the last order and display it
+         * we make sure that the last order isn't empty
+         */
         if (orderIdentifierList.size() > 0) {
             position = orderIdentifierList.size() - 1;
             while (position > 0) {
@@ -67,76 +71,98 @@ public class AdminActivity extends AppCompatActivity {
             positionInOrder = orderIdentifierList.get(position).getOrderClasses().size() - 1;
             updateScreen();
         }
+        /**
+         * moves to next order if exist
+         */
         btNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ((position < orderIdentifierList.size() - 1 && orderIdentifierList.get(position + 1).getOrderClasses().toString() != "[]") || positionInOrder < orderIdentifierList.get(position).getOrderClasses().size() - 1) {
-                    if (positionInOrder < orderIdentifierList.get(position).getOrderClasses().size() - 1) {
-                        positionInOrder++;
+                if (orderIdentifierList.size()>0) {
+                    if ((position < orderIdentifierList.size() - 1 && orderIdentifierList.get(position + 1).getOrderClasses().toString() != "[]") || positionInOrder < orderIdentifierList.get(position).getOrderClasses().size() - 1) {
+                        if (positionInOrder < orderIdentifierList.get(position).getOrderClasses().size() - 1) {
+                            positionInOrder++;
+                        } else {
+                            position++;
+                            positionInOrder = 0;
+                        }
+                        updateScreen();
                     } else {
-                        position++;
-                        positionInOrder = 0;
+                        Toast.makeText(AdminActivity.this, "you are at the last order", Toast.LENGTH_SHORT).show();
                     }
-                    updateScreen();
                 } else {
-                    Toast.makeText(AdminActivity.this, "you are at the last order", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivity.this, "you don't have any orders", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        /**
+         * moves to previous order if exist
+         */
         btPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ((position >= 1 && orderIdentifierList.get(position - 1).getOrderClasses().toString() != "[]") || positionInOrder >= 1) {
-                    if (positionInOrder >= 1) {
-                        positionInOrder--;
+                if (orderIdentifierList.size()>0) {
+                    if ((position >= 1 && orderIdentifierList.get(position - 1).getOrderClasses().toString() != "[]") || positionInOrder >= 1) {
+                        if (positionInOrder >= 1) {
+                            positionInOrder--;
+                        } else {
+                            position--;
+                            positionInOrder = orderIdentifierList.get(position).getOrderClasses().size() - 1;
+                        }
+                        updateScreen();
                     } else {
-                        position--;
-                        positionInOrder = orderIdentifierList.get(position).getOrderClasses().size() - 1;
+                        Toast.makeText(AdminActivity.this, "you are at the first order", Toast.LENGTH_SHORT).show();
                     }
-                    updateScreen();
                 } else {
-                    Toast.makeText(AdminActivity.this, "you are at the first order", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivity.this, "you don't have any orders", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        /**
+         * updating the status of order if it is possible (if isn't delivered)
+         */
         btNextStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OrderClass tempOrder = orderIdentifierList.get(position).getOrderClasses().get(positionInOrder);
-                if (tempOrder.getStatusOfOrder() < 3) {
-                    ProgressDialog loadingIndicator = new ProgressDialog(AdminActivity.this);
-                    loadingIndicator.setMessage("updating order");
-                    loadingIndicator.show();
-                    Map<String, Object> map = new HashMap<>();
-                    tempOrder.setStatusOfOrder(tempOrder.getStatusOfOrder() + 1);
-                    orderIdentifierList.get(position).getOrderClasses().set(positionInOrder, tempOrder);
-                    for (int i = 0; i < orderIdentifierList.get(position).getOrderClasses().size(); i++) {
-                        map.put("order" + (i + 1), orderIdentifierList.get(position).getOrderClasses().get(i));
+                if (orderIdentifierList.size() > 0) {
+                    OrderClass tempOrder = orderIdentifierList.get(position).getOrderClasses().get(positionInOrder);
+                    if (tempOrder.getStatusOfOrder() < 3) {
+                        ProgressDialog loadingIndicator = new ProgressDialog(AdminActivity.this);
+                        loadingIndicator.setMessage("updating order");
+                        loadingIndicator.show();
+                        Map<String, Object> map = new HashMap<>();
+                        tempOrder.setStatusOfOrder(tempOrder.getStatusOfOrder() + 1);
+                        orderIdentifierList.get(position).getOrderClasses().set(positionInOrder, tempOrder);
+                        for (int i = 0; i < orderIdentifierList.get(position).getOrderClasses().size(); i++) {
+                            map.put("order" + (i + 1), orderIdentifierList.get(position).getOrderClasses().get(i));
+                        }
+                        DocumentReference documentReference = firestore.collection("orders").document(orderIdentifierList.get(position).getUserId());
+                        documentReference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                orderStatus.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getStatusOfOrderString());
+                                Toast.makeText(AdminActivity.this, "order updated successfully ", Toast.LENGTH_SHORT).show();
+                                loadingIndicator.cancel();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull @NotNull Exception e) {
+                                Toast.makeText(AdminActivity.this, "failed 2 upload data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                loadingIndicator.cancel();
+                            }
+
+                        });
+                    } else {
+                        Toast.makeText(AdminActivity.this, "the order already arrived", Toast.LENGTH_SHORT).show();
                     }
-
-                    FirebaseUser userLoggedIn = FirebaseAuth.getInstance().getCurrentUser();
-                    DocumentReference documentReference = firestore.collection("orders").document(orderIdentifierList.get(position).getUserId());
-                    documentReference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            orderStatus.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getStatusOfOrderString());
-                            Toast.makeText(AdminActivity.this, "order updated successfully ", Toast.LENGTH_SHORT).show();
-                            loadingIndicator.cancel();
-                        }
-
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull @NotNull Exception e) {
-                            Toast.makeText(AdminActivity.this, "failed 2 upload data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            loadingIndicator.cancel();
-                        }
-
-                    });
-                } else {
-                    Toast.makeText(AdminActivity.this, "the order already arrived", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(AdminActivity.this, "you don't have any orders", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        /**
+         * updating the most updated data from db and refresh the screen
+         */
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -164,6 +190,10 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * refresh screen function
+     */
     public void updateScreen() {
         orderFlavor.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getFlavor());
         orderStatus.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getStatusOfOrderString());

@@ -5,50 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LogInActivity">
+
     <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/tv_update_head_line"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="50dp"
             android:text="@string/login"
-            style="@android:style/TextAppearance.DeviceDefault.Large"
-            android:textStyle="italic"
-            android:layout_gravity="center"/>
+            android:textStyle="italic" />
+
         <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="150dp"
             android:layout_marginTop="80dp"
-            android:text="@string/enter_email"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"/>
+            android:text="@string/enter_email" />
 
         <EditText
             android:id="@+id/tv_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:inputType="textEmailAddress"
-            android:text="a@a.com"
-            android:ems="10"/>
+            android:ems="10"
+            android:inputType="textEmailAddress"/>
+
         <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="150dp"
             android:layout_marginTop="40dp"
-            android:text="@string/enter_password"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"/>
+            android:text="@string/enter_password" />
 
         <EditText
             android:id="@+id/tv_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:inputType="textWebPassword"
-            android:text="123456"
-            android:ems="10"/>
+            android:ems="10"
+            android:inputType="textWebPassword" />
 
         <Button
             android:id="@+id/log_bt_login"
@@ -60,13 +63,13 @@
 
         <TextView
             android:id="@+id/bt_register"
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="@string/you_are_not_registered_register_here"
             android:gravity="center"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:textColor="#983fb5"/>
+            android:text="@string/you_are_not_registered_register_here"
+            android:textColor="#983fb5" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,17 +31,17 @@ public class BuyActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
     User userClass;
-    String TAG ="BuyActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy);
         userClass = (User) getIntent().getSerializableExtra("USER_CLASS");
-        btBuyVanilla = (Button) findViewById(R.id.bt_buy_vanilla);
-        btBuyCookieAndCream = (Button) findViewById(R.id.bt_buy_cookie_and_cream);
-        btBuyBlueberryCheesecake = (Button) findViewById(R.id.bt_buy_blueberry_cheesecake);
+        btBuyVanilla = findViewById(R.id.bt_buy_vanilla);
+        btBuyCookieAndCream = findViewById(R.id.bt_buy_cookie_and_cream);
+        btBuyBlueberryCheesecake = findViewById(R.id.bt_buy_blueberry_cheesecake);
         firebaseAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+
         btBuyVanilla.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,19 +64,25 @@ public class BuyActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * update db with new order by adding new order to the map of orders (from userClass)
+     * @param orderClass get the order
+     * after success we move to main activity
+     */
     public void order(OrderClass orderClass) {
-        Map<String, Object> map = userClass.getMapOfOrders();
+        Map<String, Object> tempMapOfOrders = userClass.getMapOfOrders();
         ProgressDialog loadingIndicator = new ProgressDialog(BuyActivity.this);
         loadingIndicator.setMessage("creating order");
         loadingIndicator.show();
-        if (map == null)
-            map = new HashMap<>();
-        map.put("order" + (map.size() + 1), orderClass);
+        if (tempMapOfOrders == null)
+            tempMapOfOrders = new HashMap<>();
+        tempMapOfOrders.put("order" + (tempMapOfOrders.size() + 1), orderClass);
         userClass.addSingleOrderClass(orderClass);
         FirebaseUser userLoggedIn = FirebaseAuth.getInstance().getCurrentUser();
         DocumentReference documentReference = firestore.collection("orders").document(userLoggedIn.getUid());
-        userClass.setMapOfOrders(map);
-        documentReference.set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+        userClass.setMapOfOrders(tempMapOfOrders);
+        documentReference.set(tempMapOfOrders).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 Toast.makeText(BuyActivity.this, "order received successfully ", Toast.LENGTH_SHORT).show();

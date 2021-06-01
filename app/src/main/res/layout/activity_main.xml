@@ -118,26 +118,25 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/next_order_bt"
+                    android:id="@+id/previous_order_bt"
                     style="@android:style/TextAppearance.DeviceDefault.Small"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="50dp"
                     android:background="@android:color/white"
-                    android:text="next order" />
+                    android:text="previous order" />
 
                 <Button
-                    android:id="@+id/previous_order_bt"
+                    android:id="@+id/next_order_bt"
                     style="@android:style/TextAppearance.DeviceDefault.Small"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="20dp"
                     android:background="@android:color/white"
-                    android:text="previous order" />
+                    android:text="next order" />
             </LinearLayout>
-
 
             <Button
                 android:id="@+id/about_bt"

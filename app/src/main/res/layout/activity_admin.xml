@@ -141,16 +141,6 @@
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/admin_next_order_bt"
-                    style="@android:style/TextAppearance.DeviceDefault.Small"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="50dp"
-                    android:background="@android:color/white"
-                    android:text="Next Order"
-                    android:textAllCaps="false" />
 
                 <Button
                     android:id="@+id/admin_previous_order_bt"
@@ -158,9 +148,20 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="50dp"
                     android:background="@android:color/white"
                     android:text="Previous Order"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/admin_next_order_bt"
+                    style="@android:style/TextAppearance.DeviceDefault.Small"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:background="@android:color/white"
+                    android:text="Next Order"
                     android:textAllCaps="false" />
             </LinearLayout>
         </LinearLayout>
