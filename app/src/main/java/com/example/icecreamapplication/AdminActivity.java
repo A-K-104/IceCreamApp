@@ -77,7 +77,7 @@ public class AdminActivity extends AppCompatActivity {
         btNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (orderIdentifierList.size()>0) {
+                if (orderIdentifierList.size() > 0) {
                     if ((position < orderIdentifierList.size() - 1 && orderIdentifierList.get(position + 1).getOrderClasses().toString() != "[]") || positionInOrder < orderIdentifierList.get(position).getOrderClasses().size() - 1) {
                         if (positionInOrder < orderIdentifierList.get(position).getOrderClasses().size() - 1) {
                             positionInOrder++;
@@ -100,7 +100,7 @@ public class AdminActivity extends AppCompatActivity {
         btPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (orderIdentifierList.size()>0) {
+                if (orderIdentifierList.size() > 0) {
                     if ((position >= 1 && orderIdentifierList.get(position - 1).getOrderClasses().toString() != "[]") || positionInOrder >= 1) {
                         if (positionInOrder >= 1) {
                             positionInOrder--;
@@ -154,8 +154,7 @@ public class AdminActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(AdminActivity.this, "the order already arrived", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else {
+                } else {
                     Toast.makeText(AdminActivity.this, "you don't have any orders", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -195,9 +194,11 @@ public class AdminActivity extends AppCompatActivity {
      * refresh screen function
      */
     public void updateScreen() {
-        orderFlavor.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getFlavor());
-        orderStatus.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getStatusOfOrderString());
-        orderDate.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getDateOfOrder().getDate());
-        orderName.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getNameOfOrder());
+        if (orderIdentifierList.size() > 0) {
+            orderFlavor.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getFlavor());
+            orderStatus.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getStatusOfOrderString());
+            orderDate.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getDateOfOrder().getDate());
+            orderName.setText(orderIdentifierList.get(position).getOrderClasses().get(positionInOrder).getNameOfOrder());
+        }
     }
 }

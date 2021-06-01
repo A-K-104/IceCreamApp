@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -134,7 +135,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot1) {
                         userClass.setMapOfOrders(documentSnapshot1.getData());
-                        userClass.getListOfOrders().get(0).setOrderClasses(userClass.getListOfOrdersFromMap());
+                        if(userClass.getListOfOrders().size()>0) {
+                            userClass.getListOfOrders().get(0).setOrderClasses(userClass.getListOfOrdersFromMap());
+                        }
+                        else {
+                            userClass.getListOfOrders().add(new OrderIdentifier(userClass.getListOfOrdersFromMap()));
+                        }
                         listOfOrders = userClass.getListOfOrders().get(0).getOrderClasses();
                         updateScreen();
                         swipeRefreshLayout.setRefreshing(false);
@@ -154,8 +160,10 @@ public class MainActivity extends AppCompatActivity {
      * refresh screen function
      */
     public void updateScreen() {
-        lastOrderFlavor.setText(listOfOrders.get(position).getFlavor());
-        lastOrderStatus.setText(listOfOrders.get(position).getStatusOfOrderString());
-        lastOrderDate.setText(listOfOrders.get(position).getDateOfOrder().getDate());
+        if (listOfOrders.size() > 0) {
+            lastOrderFlavor.setText(listOfOrders.get(position).getFlavor());
+            lastOrderStatus.setText(listOfOrders.get(position).getStatusOfOrderString());
+            lastOrderDate.setText(listOfOrders.get(position).getDateOfOrder().getDate());
+        }
     }
 }
