@@ -85,7 +85,14 @@ public class LogInActivity extends AppCompatActivity {
                                             }
                                             loadingIndicator.cancel();
                                         }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull @NotNull Exception e) {
+                                            Toast.makeText(LogInActivity.this, "failed 2 log in: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            loadingIndicator.cancel();
+                                        }
                                     });
+                                    ;
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -94,8 +101,6 @@ public class LogInActivity extends AppCompatActivity {
                                     loadingIndicator.cancel();
                                 }
                             });
-
-
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -120,12 +125,12 @@ public class LogInActivity extends AppCompatActivity {
         });
     }
 
-    public void order(Intent intent,User user) {
+    public void order(Intent intent, User user) {
         firestore.collection("orders").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 List<OrderIdentifier> orders = new ArrayList<>();
-                for (int i=0;i<queryDocumentSnapshots.getDocuments().size();i++){
+                for (int i = 0; i < queryDocumentSnapshots.getDocuments().size(); i++) {
                     orders.add(new OrderIdentifier(user.getListOfOrdersFromMap(queryDocumentSnapshots.getDocuments().get(i).getData()),
                             queryDocumentSnapshots.getDocuments().get(i).getId()));
                 }
