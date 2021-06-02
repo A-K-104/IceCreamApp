@@ -28,7 +28,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="184dp"
-            android:text="develop by __________"
+            android:text="develop by Amit Biton"
             tools:layout_editor_absoluteX="114dp"
             tools:layout_editor_absoluteY="321dp" />
 
@@ -38,7 +38,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="153dp"
-            android:text="id num: _______"
+            android:text="id number: 325248391"
             tools:layout_editor_absoluteX="132dp"
             tools:layout_editor_absoluteY="340dp" />
 
@@ -58,7 +58,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="121dp"
-            android:text="Date: april 2021"
+            android:text="Date: june 2021"
             tools:layout_editor_absoluteX="143dp"
             tools:layout_editor_absoluteY="359dp" />
 
